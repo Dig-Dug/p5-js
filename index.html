@@ -1,16 +1,17 @@
 <html>
   <head>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
-    <script src="sketch.js"></script>
+   <!--  <script src="sketch.js"></script> -->
+    <link rel="icon" type="image/x-icon" href="ssd.jpg">
   </head>
   <body>
     <main>
         <p>lol</p>
     </main>
     <script>
-function setup() {
+/* function setup() {
   // Sets the screen to be 720 pixels wide and 400 pixels high
-  createCanvas(720, 400);
+   createCanvas(720, 400);
   background(0);
   noStroke();
 
@@ -30,7 +31,20 @@ function setup() {
   triangle(288, 18, 351, 360, 288, 360);
 
   fill(255);
-  arc(479, 300, 280, 280, PI, TWO_PI);
+  arc(479, 300, 280, 280, PI, TWO_PI); 
+} */
+let diameter;
+let angle = 0;
+function setup(){
+  createCanvas(400,400)
+  diameter = width * 100;
+  noStroke(); fill(255,205,0)
+}
+function draw(){
+  background(0);
+  let i = 10 + (sin(diameter + angle) * 10 ) ;
+  ellipse(0,height /2,i,i );
+  angle += 0.02;
 }
     </script>
   </body>
