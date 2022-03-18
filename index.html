@@ -33,19 +33,64 @@
   fill(255);
   arc(479, 300, 280, 280, PI, TWO_PI); 
 } */
-let diameter;
-let angle = 0;
+
+let xspacing = 16; 
+let w;
+let theta = 0.0; let amplitude = 75.0;
+let period = 500.0;
+let yvalue = 125;
+let dx;
+
 function setup(){
-  createCanvas(400,400)
-  diameter = width * 100;
-  noStroke(); fill(255,205,0)
+  createCanvas(700,700);
+  w = width + 16;
+   dx = (TWO_PI / period ) * xspacing;
+   yvalue = new Array(floor(w /xspacing));
 }
 function draw(){
-  background(0);
-  let i = 10 + (sin(diameter + angle) * 10 ) ;
-  ellipse(0,height /2,i,i );
-  angle += 0.02;
+  background(12,12,222)
+//calcWave(); 
+calcWavee(); 
+//renderWave();
+renderWave5()
 }
+function calcWave(){
+  theta += 0.02; 
+  let x = theta
+  for(let i = 0; i < yvalue.length; i++){
+    yvalue[i] = sin(x) * amplitude;
+    x += dx;
+  }
+}
+function calcWavee(){
+  theta += 0.02; 
+  let x = theta * 2
+  for(let i = 0; i < yvalue.length; i++){
+    yvalue[i] = sin(x) * amplitude;
+    x += dx;
+  }
+}
+function renderWave(){
+  noStroke();
+  fill(23)
+ for(let x = 0; x < yvalue.length; x++){
+rect(x * xspacing,height/2 + yvalue[x], 6,5);
+
+
+} fill(253)
+for(let x = 0; x < yvalue.length; x++){
+  fill(299)
+ellipse(x * xspacing + 242,width/6 + yvalue[x], 8,5)
+}}
+
+function renderWave5(){
+  noStroke();
+  fill(23)
+ for(let x = 40; x < yvalue.length; x++){
+rect(x * xspacing,height/2 + yvalue[x], 16,15);
+fill(290)
+rect(x * xspacing * 20,height - yvalue[x *= 5], 16,15);
+}}
     </script>
   </body>
 </html>
