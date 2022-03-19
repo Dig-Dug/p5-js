@@ -10,69 +10,43 @@
     </main>
     <script>
 
-let xspacing = 8; // Distance between each horizontal location
-let w; // Width of entire wave
-let maxwaves = 4; // total # of waves to add together
-
-let theta = 0.0;
-let amplitude = new Array(maxwaves); // Height of wave
-// Value for incrementing X, to be calculated
-// as a function of period and xspacing
-let dx = new Array(maxwaves);
-// Using an array to store height values
-// for the wave (not entirely necessary)
-let yvalues;
+let e,e1,e2;
 function setup(){
-  createCanvas(710, 400);
-  frameRate(30);
-  colorMode(RGB, 255, 255, 255, 100);
-  w = width + 16;
-
-  for (let i = 0; i < maxwaves; i++) {
-    amplitude[i] = random(10, 30);
-    let period = random(100, 300); // Num pixels before wave repeats
-    dx[i] = (TWO_PI / period) * xspacing;
-  }
-
-  yvalues = new Array(floor(w / xspacing));
+  createCanvas(700,400);
+  e = new Eye(20,200,30);
+  e1 = new Eye(10,100,30);
+  e2 = new Eye(2,20,30);
 }
-
 function draw(){
-  background(0);
-  calcWave();
-  renderWave();
+  background(102)
+  e.update(mouseX, mouseY); 
+  e1.update(mouseX, mouseY); 
+  e2.update(mouseX, mouseY); 
+  e.display();
+  e1.display();
+  e2.display();
 }
-function calcWave(){
-  theta += 0.22;
-  for(let i = 0; i < yvalues.length; i++){
-    yvalues[i] = 0;
-  }
-  for(let j = 0; j < maxwaves; j++){
-    let x = theta;
-    for(let i = 0; i < yvalues.length; i++){
-    if(j % 2 == 0)
-yvalues[i] += sin(x) * amplitude[j];
-    else
- yvalues[i] += cos(x) * amplitude[j];
-x += dx[j]
-    
-  }}
+function Eye(tx,ty,ts){
+  this.x = tx;
+  this.y = ty;
+this.size = ts;
+this.angle = 30;
 
+  this.update=function(mx,my){
+this.angle = atan2(my - this.x, mx - this.y)
 }
-function renderWave(){
-  noStroke();
-  fill(255, 50);
-  ellipseMode(CENTER);
-  for (let x = 0; x < yvalues.length; x++) {
-    ellipse(x * xspacing - 1, width / 2 + yvalues[x], 36, 36);
-    
-    ellipse(x + xspacing , width / 2 + yvalues[x], 36, 36).fill(445, 54);
-    ellipse(x - xspacing , width / 4 + yvalues[x & 67], 36, 36).fill(445, 54);
- 
-  }
-  
-   
+this.display= function(){
+ fill(174)
+ ellipse(576,146, this.size, this.size)
+ rotate(this.angle)
+ fill(23)
+  ellipse(476,152, this.size, this.size / 3)
+ rotate(this.angle)
 }
+}
+
+
+
     </script>
   </body>
 </html>

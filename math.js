@@ -269,3 +269,111 @@ function renderWave() {
   }
 }
 //Additive Wave--------------------------------------
+let xspacing = 8; // Distance between each horizontal location
+let w; // Width of entire wave
+let maxwaves = 4; // total # of waves to add together
+
+let theta = 0.0;
+let amplitude = new Array(maxwaves); // Height of wave
+// Value for incrementing X, to be calculated
+// as a function of period and xspacing
+let dx = new Array(maxwaves);
+// Using an array to store height values
+// for the wave (not entirely necessary)
+let yvalues;
+
+function setup() {
+  createCanvas(710, 400);
+  frameRate(30);
+  colorMode(RGB, 255, 255, 255, 100);
+  w = width + 16;
+
+  for (let i = 0; i < maxwaves; i++) {
+    amplitude[i] = random(10, 30);
+    let period = random(100, 300); // Num pixels before wave repeats
+    dx[i] = (TWO_PI / period) * xspacing;
+  }
+
+  yvalues = new Array(floor(w / xspacing));
+}
+
+function draw() {
+  background(0);
+  calcWave();
+  renderWave();
+}
+
+function calcWave() {
+  // Increment theta (try different values
+  // for 'angular velocity' here
+  theta += 0.02;
+
+  // Set all height values to zero
+  for (let i = 0; i < yvalues.length; i++) {
+    yvalues[i] = 0;
+  }
+
+  // Accumulate wave height values
+  for (let j = 0; j < maxwaves; j++) {
+    let x = theta;
+    for (let i = 0; i < yvalues.length; i++) {
+      // Every other wave is cosine instead of sine
+      if (j % 2 == 0) yvalues[i] += sin(x) * amplitude[j];
+      else yvalues[i] += cos(x) * amplitude[j];
+      x += dx[j];
+    }
+  }
+}
+
+function renderWave() {
+  // A simple way to draw the wave with an ellipse at each location
+  noStroke();
+  fill(255, 50);
+  ellipseMode(CENTER);
+  for (let x = 0; x < yvalues.length; x++) {
+    ellipse(x * xspacing, width / 2 + yvalues[x], 16, 16);
+  }
+}
+//PolarToCartesian..........................................
+let r;
+
+// Angle and angular velocity, accleration
+let theta;
+let theta_vel;
+let theta_acc;
+
+function setup() {
+  createCanvas(710, 400);
+
+  // Initialize all values
+  r = height * 0.45;
+  theta = 0;
+  theta_vel = 0;
+  theta_acc = 0.0001;
+}
+
+function draw() {
+  background(0);
+
+  // Translate the origin point to the center of the screen
+  translate(width / 2, height / 2);
+
+  // Convert polar to cartesian
+  let x = r * cos(theta);
+  let y = r * sin(theta);
+
+  // Draw the ellipse at the cartesian coordinate
+  ellipseMode(CENTER);
+  noStroke();
+  fill(200);
+  ellipse(x, y, 32, 32);
+
+  // Apply acceleration and velocity to angle
+  // (r remains static in this example)
+  theta_vel += theta_acc;
+  theta += theta_vel;
+}
+
+//Arctangent---------------------------------------------
+
+
