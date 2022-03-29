@@ -545,4 +545,154 @@ function draw() {
   vertex(0, height);
   endShape(CLOSE);
 }
-//Noise2D_______________________________________________
+//Noise2D________________TOOHEAVY!!!!!!!!!!_______________________________
+
+let noiseVal;
+let noiseScale = 0.02;
+
+function setup() {
+  createCanvas(640, 360);
+}
+
+function draw() {
+  background(0);
+  // Draw the left half of image
+  for (let y = 0; y < height - 30; y++) {
+    for (let x = 0; x < width / 2; x++) {
+      // noiseDetail of the pixels octave count and falloff value
+      noiseDetail(2, 0.2);
+      noiseVal = noise((mouseX + x) * noiseScale, (mouseY + y) * noiseScale);
+      stroke(noiseVal * 255);
+      point(x, y);
+    }
+  }
+  // Draw the right half of image
+  for (let y = 0; y < height - 30; y++) {
+    for (let x = width / 2; x < width; x++) {
+      // noiseDetail of the pixels octave count and falloff value
+      noiseDetail(5, 0.5);
+      noiseVal = noise((mouseX + x) * noiseScale, (mouseY + y) * noiseScale);
+      stroke(noiseVal * 255);
+      point(x, y);
+    }
+  }
+  //Show the details of two partitions
+  textSize(18);
+  fill(255, 255, 255);
+  text('Noise2D with 2 octaves and 0.2 falloff', 10, 350);
+  text('Noise2D with 1 octaves and 0.7 falloff', 330, 350);
+}
+//NOISE 3D____________________________--------------
+
+let noiseVal;
+//Increment x by 0.01
+let x_increment = 0.01;
+//Increment z by 0.02 every draw() cycle
+let z_increment = 0.02;
+
+//Offset values
+let z_off, y_off, x_off;
+
+function setup() {
+  //Create the Canvas
+  createCanvas(640, 360);
+  //Define frame rate
+  frameRate(20);
+  //Initial value of z_off
+  z_off = 0;
+}
+
+function draw() {
+  x_off = 0;
+  y_off = 0;
+  //Make the background black
+  background(0);
+  //Adjust the noice detail
+  noiseDetail(8, 0.65);
+
+  //For each x,y calculate noice value
+  for (let y = 0; y < height; y++) {
+    x_off += x_increment;
+    y_off = 0;
+
+    for (let x = 0; x < width; x++) {
+      //Calculate and Draw each pixel
+      noiseVal = noise(x_off, y_off, z_off);
+      stroke(noiseVal * 255);
+      y_off += x_increment;
+      point(x, y);
+    }
+  }
+
+  z_off += z_increment;
+}
+
+
+//Random Chords------------------------------
+
+function setup() {
+  createCanvas(400, 400);
+  background(255, 255, 255);
+
+  // translucent stroke using alpha value
+  stroke(0, 0, 0, 15);
+}
+
+function draw() {
+  // draw two random chords each frame
+  randomChord();
+  randomChord();
+}
+
+function randomChord() {
+  // find a random point on a circle
+  let angle1 = random(0, 2 * PI);
+  let xpos1 = 200 + 200 * cos(angle1);
+  let ypos1 = 200 + 200 * sin(angle1);
+
+  // find another random point on the circle
+  let angle2 = random(0, 2 * PI);
+  let xpos2 = 200 + 200 * cos(angle2);
+  let ypos2 = 200 + 200 * sin(angle2);
+
+  // draw a line between them
+  line(xpos1, ypos1, xpos2, ypos2);
+}
+
+
+//Random Gaussian----------------------------------------
+
+function setup() {
+  createCanvas(720, 400);
+  background(0);
+}
+
+function draw() {
+
+  // Get a gaussian random number w/ mean of 0 and standard deviation of 1.0
+  let val = randomGaussian();
+
+  let sd = 60;                  // Define a standard deviation
+  let mean = width/2;           // Define a mean value (middle of the screen along the x-axis)
+  let x = ( val * sd ) + mean;  // Scale the gaussian random number by standard deviation and mean
+
+  noStroke();
+  fill(255, 10);
+  ellipse(x, height/2, 32, 32);   // Draw an ellipse at our "normal" random location
+}
+
+//map________________________________________
+function setup() {
+  createCanvas(720, 400);
+  noStroke();
+}
+
+function draw() {
+  background(0);
+  // Scale the mouseX value from 0 to 720 to a range between 0 and 175
+  let c = map(mouseX, 0, width, 0, 175);
+  // Scale the mouseX value from 0 to 720 to a range between 40 and 300
+  let d = map(mouseX, 0, width, 40, 300);
+  fill(255, c, 0);
+  ellipse(width/2, height/2, d, d);
+}

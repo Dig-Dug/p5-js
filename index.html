@@ -10,28 +10,23 @@
     </main>
     <script>
 
-let yoff = 0.0;
+
+
 function setup() {
-  createCanvas(710, 400);
-noStroke()
+  createCanvas(700, 400);
+background(0);
 }
 
-function draw() {
-  background(51);
-beginShape();
-  let xoff = 0;
-for(let x = 0; x <= width; x += 10){
-  let y = map(noise(xoff, yoff), 0,1,200,300);
 
-  vertex(x,y); 
-  xoff += 0.05;
-}
-yoff += 0.01;
-vertex(width,height);
-vertex(0,height);
-endShape(CLOSE);
-}
 
+function draw(){
+//noStroke()
+let c = map(mouseX, 0, width, 0, 375);
+let d = map(mouseY, 0, width, 0, 675)
+fill(255,c,0);
+ellipse(width/2, height/2, d,d)
+ellipse(width/4, height/2, d,d)
+}
     </script>
   </body>
 </html>
