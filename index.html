@@ -10,41 +10,15 @@
     </main>
     <script>
 
-let e,e1,e2;
 function setup(){
-  createCanvas(700,400);
-  e = new Eye(20,200,30);
-  e1 = new Eye(10,100,30);
-  e2 = new Eye(2,20,30);
+  createCanvas(700, 400);
+  strokeWeight(25);
+  frameRate(8);
 }
 function draw(){
-  background(102)
-  e.update(mouseX, mouseY); 
-  e1.update(mouseX, mouseY); 
-  e2.update(mouseX, mouseY); 
-  e.display();
-  e1.display();
-  e2.display();
-}
-function Eye(tx,ty,ts){
-  this.x = tx;
-  this.y = ty;
-this.size = ts;
-this.angle = 30;
 
-  this.update=function(mx,my){
-this.angle = atan2(my - this.x, mx - this.y)
-}
-this.display= function(){
- fill(174)
- ellipse(576,146, this.size, this.size)
- rotate(this.angle)
- fill(23)
-  ellipse(476,152, this.size, this.size / 3)
- rotate(this.angle)
-}
-}
 
+}
 
 
     </script>

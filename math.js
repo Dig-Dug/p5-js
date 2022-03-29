@@ -375,5 +375,106 @@ function draw() {
 }
 
 //Arctangent---------------------------------------------
+let e1, e2, e3;
+
+function setup() {
+  createCanvas(720, 400);
+  noStroke();
+  e1 = new Eye(250, 16, 120);
+  e2 = new Eye(164, 185, 80);
+  e3 = new Eye(420, 230, 220);
+}
+
+function draw() {
+  background(102);
+  e1.update(mouseX, mouseY);
+  e2.update(mouseX, mouseY);
+  e3.update(mouseX, mouseY);
+  e1.display();
+  e2.display();
+  e3.display();
+}
+
+function Eye(tx, ty, ts) {
+  this.x = tx;
+  this.y = ty;
+  this.size = ts;
+  this.angle = 0;
+
+  this.update = function(mx, my) {
+    this.angle = atan2(my - this.y, mx - this.x);
+  };
+
+  this.display = function() {
+    push();
+    translate(this.x, this.y);
+    fill(255);
+    ellipse(0, 0, this.size, this.size);
+    rotate(this.angle);
+    fill(153, 204, 0);
+    ellipse(this.size / 4, 0, this.size / 2, this.size / 2);
+    pop();
+  };
+}
+
+//Linear interpolation--------------------------------------------
 
 
+let x = 0;
+let y = 0;
+
+function setup() {
+  createCanvas(720, 400);
+  noStroke();
+}
+
+function draw() {
+  background(51);
+
+  // lerp() calculates a number between two numbers at a specific increment.
+  // The amt parameter is the amount to interpolate between the two values
+  // where 0.0 equal to the first point, 0.1 is very near the first point, 0.5
+  // is half-way in between, etc.
+
+  // Here we are moving 5% of the way to the mouse location each frame
+  x = lerp(x, mouseX, 0.05);
+  y = lerp(y, mouseY, 0.05);
+
+  fill(255);
+  stroke(255);
+  ellipse(x, y, 66, 66);
+}
+//Double Random.............................................
+let totalPts = 300;
+let steps = totalPts + 1;
+
+function setup() {
+  createCanvas(710, 400);
+  stroke(255);
+  frameRate(1);
+}
+
+function draw() {
+  background(0);
+  let rand = 0;
+  for (let i = 1; i < steps; i++) {
+    point((width / steps) * i, height / 2 + random(-rand, rand));
+    rand += random(-5, 5);
+  }
+}
+
+//Random-----------------------------------------------------
+function setup() {
+  createCanvas(710, 400);
+  background(0);
+  strokeWeight(20);
+  frameRate(2);
+}
+
+function draw() {
+  for (let i = 0; i < width; i++) {
+    let r = random(255);
+    stroke(r);
+    line(i, 0, i, height);
+  }
+}
