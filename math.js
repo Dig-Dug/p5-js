@@ -478,3 +478,71 @@ function draw() {
     line(i, 0, i, height);
   }
 }
+
+//Noise1D------------------------------------------
+let xoff = 0.0;
+let xincrement = 0.01;
+
+function setup() {
+  createCanvas(710, 400);
+  background(0);
+  noStroke();
+}
+
+function draw() {
+  // Create an alpha blended background
+  fill(0, 10);
+  rect(0, 0, width, height);
+
+  //let n = random(0,width);  // Try this line instead of noise
+
+  // Get a noise value based on xoff and scale
+  // it according to the window's width
+  let n = noise(xoff) * width;
+
+  // With each cycle, increment xoff
+  xoff += xincrement;
+
+  // Draw the ellipse at the value produced by perlin noise
+  fill(200);
+  ellipse(n, height / 2, 64, 64);
+}
+//Noise Wave------------------------------------------
+let yoff = 0.0; // 2nd dimension of perlin noise
+
+function setup() {
+  createCanvas(710, 400);
+}
+
+function draw() {
+  background(51);
+
+  fill(255);
+  // We are going to draw a polygon out of the wave points
+  beginShape();
+
+  let xoff = 0; // Option #1: 2D Noise
+  // let xoff = yoff; // Option #2: 1D Noise
+
+  // Iterate over horizontal pixels
+  for (let x = 0; x <= width; x += 10) {
+    // Calculate a y value according to noise, map to
+
+    // Option #1: 2D Noise
+    let y = map(noise(xoff, yoff), 0, 1, 200, 300);
+
+    // Option #2: 1D Noise
+    // let y = map(noise(xoff), 0, 1, 200,300);
+
+    // Set the vertex
+    vertex(x, y);
+    // Increment x dimension for noise
+    xoff += 0.05;
+  }
+  // increment y dimension for noise
+  yoff += 0.01;
+  vertex(width, height);
+  vertex(0, height);
+  endShape(CLOSE);
+}
+//Noise2D_______________________________________________
