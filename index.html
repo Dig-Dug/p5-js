@@ -11,16 +11,75 @@
     <script>
 
 
-
+let movers = []; let liquid;
 function setup() {
 createCanvas(700,400);
+ reset();
+
+liquid = new Liquid(0,height/2,width,height/2, 0.1);
 }
 
 
 
 function draw(){
+background(227);
+liquid.display();
+
+
+fill("red");ellipse(20,20,20,20);
+for(let i = 0; i< 12; i++){
+  movers[i].display();
+}
+
 
 }
+function reset(){
+  console.log("jsdij")
+}
+let Liquid = function (x,y,w,h,c){
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.c = c;
+}
+Liquid.prototype.calculateDrag = function(m){
+  //Calculates the magnitude (length) of the vector and returns the result as a float
+  let speed = m.velocity.mag();
+  let dragMagnitude = this.c * speed * speed;
+  //velocity is a vector, copy and mult are vector functions
+  let dragForce = m.velocity.copy();
+  dragForce.mult(-1)  
+  //Normalize the vector to length 1 (make it a unit vector)
+  dragForce.normalice();
+  dragForce.mult(dragMagnitude);
+  return dragForce;
+}
+Liquid.prototype.display = function(){
+  //noStroke();
+   fill("blue");
+  rect(this.x,this.y,this.w, this.h)
+}
+function Mover(m,x,y){
+  this.mass = m;
+  this.position(x,y);
+  this.velocity = 0.0;
+  this.acceleration = 0.0;
+
+}
+//The update method is run in the draw loop
+Mover.prototype.update = function(){
+this.velocity.add(this.acceleration);
+this.position.add(this.velocity);
+this.acceleration.mult(0);
+}
+Mover.prototype.display = function() {
+  stroke(0);
+  strokeWeight(2);
+  fill(255,127);
+  ellipse(this.position.x, this.position.y, this.mass * 16, this.mass * 16);
+};
+
  </script>
   </body>
 </html>
