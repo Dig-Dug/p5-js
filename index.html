@@ -11,60 +11,100 @@
     <script>
 
 
-let system;
+let flock;
 function setup() {
 createCanvas(700,400);
-system = new ParticleSystem(createVector(width/2, 50));
+createP("->'createP' another p5*js function")
+flock = new Flock();
+for(let i = 0; i < 100; i++){
+  let b = new Boid(width/2, height/2);
+  flock.addBoid(b);
+}
+function mouseDragged(){
+  flock.addBoid(new Boid(mouseX, mouseY));
+}
  }
-
-
-
-
 function draw(){
-background(51); 
-system.addParticle();
-system.run();
+  background(51);
+  flock.run();
+}
+
+function Flock(){
+this.boids = []
+}
+Flock.prototype.run = function(){
+for(let i = 0; i < this.boids.length; i++){
+  this.boids[i].run(this.boids);
+}
+fill("red");
+ellipse(12,12,12,12);
 
 }
-let Particle = function(position){
-this.acceleration = createVector(0, 0.05);
-this.position = position.copy();
-this.velocity = createVector(random(-1,1), random(-1, 0));
-this.lifespan = 225;
+Flock.prototype.addBoid = function(b){
+this.boids.push(b)
+}
+function Boid(x,y){
+  this.acceleration = createVector(0,0)
+  this.velocity = createVector(random(-1,1),random(-1,1))
+  this.position = createVector(x,y)
+  this.r = 3.0;
+  this.maxspeed = 3;
+  this.maxforce = 0.05;
 
 }
-Particle.prototype.run = function(){
-  this.update();
-  this.display();
+Boid.prototype.run = function(boids){
+this.flock(boids);
+this.update();
+this.borders;
+this.render();
 }
-Particle.prototype.update = function(){
-  this.velocity.add(this.acceleration);
-  this.position.add(this.velocity);
-  this.lifespan -= 2;
+Boid.prototype.applyForce = function(force){
+this.acceleration.add(force);
 }
-Particle.prototype.display=function(){
-  stroke(200,this.lifespan);strokeWeight(2)
-  fill(127, this.lifespan);
-  ellipse(this.position.x, this.position.y, 12,12)
+Boid.prototype.flock = function(boids){
+  let sep = this.separate(boids);   // Separation
+  let ali = this.align(boids);      // Alignment
+  let coh = this.cohesion(boids);   // Cohesion
+  // Arbitrarily weight these forces
+  sep.mult(1.5);
+  ali.mult(1.0);
+  coh.mult(1.0);
+  // Add the force vectors to acceleration
+  this.applyForce(sep);
+  this.applyForce(ali);
+  this.applyForce(coh);
 }
-Particle.prototype.isDead = function(){
-  return this.lifespan < 0;
-}
-let ParticleSystem = function(position){
-  this.origin =  position.copy();
-  this.particles = [];
-}
-ParticleSystem.prototype.addParticle = function(){
-  this.particles.push(new Particle(this.origin));
-}
-ParticleSystem.prototype.run = function(){
-  for(let i =  this.particles.length -1; i >= 0; i--){
-let p = this.particles[i]; 
-p.run();
-if(p.isDead()){
-  this.particles.splice(i,1)
-}
+Boid.prototype.separate = function(boids){
+let desiredSeparation = 25.0
+let steer = createVector(0,0)
+let count = 0
+for(let i = 0; i < boids.length; i++){
+  //dist( vector method for distance)
+  let d = p5.Vector.dist(this.position,boids[i].position)
+  if((d > 0) && (d < desiredSeparation)){
+  //sub( vector substraction)
+let diff = p5.Vector.sub(this.position, boids[i].position);
+diff.normalize()//Normalize the vector to length 1 (make it a unit vector).
+diff.div(d);
+steer.add(diff);
+    count++;
   }
+  if(count > 0){
+steer.div(count)
+//console.log(steer)
+  }
+  if(steer.mag() > 0){
+  steer.normalize();
+  steer.mult(this.maxspeed);
+  steer.sub(this.velocity);
+  steer.limit(this.maxforce)//Limit the magnitude of this vector to the value used for the max parameter
+  }
+}
+return steer;
+}
+Boid.prototype.align = function(boids){}
+Boid.prototype.cohesion = function(boids){
+  //TODO
 }
  </script>
   </body>
