@@ -9,103 +9,62 @@
         <p>lol</p>
     </main>
     <script>
+let w = 10;
+// An array of 0s and 1s
+let cells;
 
+ // We arbitrarily start with just the middle cell having a state of "1"
+let generation = 0;
 
-let flock;
+// An array to store the ruleset, for example {0,1,1,0,1,1,0,1}
+let ruleset = [0, 1, 0, 1, 1, 0, 1, 0];
 function setup() {
 createCanvas(700,400);
-createP("->'createP' another p5*js function")
-flock = new Flock();
-for(let i = 0; i < 100; i++){
-  let b = new Boid(width/2, height/2);
-  flock.addBoid(b);
-}
-function mouseDragged(){
-  flock.addBoid(new Boid(mouseX, mouseY));
-}
+cells = Array(floor(width/w));
+for(let i = 0; i < cells.length; i++){
+  cells[i] = 0;
+}cells[cells.length/2] = 1
  }
-function draw(){
-  background(51);
-  flock.run();
-}
-
-function Flock(){
-this.boids = []
-}
-Flock.prototype.run = function(){
-for(let i = 0; i < this.boids.length; i++){
-  this.boids[i].run(this.boids);
-}
-fill("red");
-ellipse(12,12,12,12);
-
-}
-Flock.prototype.addBoid = function(b){
-this.boids.push(b)
-}
-function Boid(x,y){
-  this.acceleration = createVector(0,0)
-  this.velocity = createVector(random(-1,1),random(-1,1))
-  this.position = createVector(x,y)
-  this.r = 3.0;
-  this.maxspeed = 3;
-  this.maxforce = 0.05;
-
-}
-Boid.prototype.run = function(boids){
-this.flock(boids);
-this.update();
-this.borders;
-this.render();
-}
-Boid.prototype.applyForce = function(force){
-this.acceleration.add(force);
-}
-Boid.prototype.flock = function(boids){
-  let sep = this.separate(boids);   // Separation
-  let ali = this.align(boids);      // Alignment
-  let coh = this.cohesion(boids);   // Cohesion
-  // Arbitrarily weight these forces
-  sep.mult(1.5);
-  ali.mult(1.0);
-  coh.mult(1.0);
-  // Add the force vectors to acceleration
-  this.applyForce(sep);
-  this.applyForce(ali);
-  this.applyForce(coh);
-}
-Boid.prototype.separate = function(boids){
-let desiredSeparation = 25.0
-let steer = createVector(0,0)
-let count = 0
-for(let i = 0; i < boids.length; i++){
-  //dist( vector method for distance)
-  let d = p5.Vector.dist(this.position,boids[i].position)
-  if((d > 0) && (d < desiredSeparation)){
-  //sub( vector substraction)
-let diff = p5.Vector.sub(this.position, boids[i].position);
-diff.normalize()//Normalize the vector to length 1 (make it a unit vector).
-diff.div(d);
-steer.add(diff);
-    count++;
+ function draw() {
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i] === 1) {
+      fill(200);
+    } else {
+      fill(51);
+      noStroke();
+      rect(i * w, generation * w, w, w);
+    }
   }
-  if(count > 0){
-steer.div(count)
-//console.log(steer)
-  }
-  if(steer.mag() > 0){
-  steer.normalize();
-  steer.mult(this.maxspeed);
-  steer.sub(this.velocity);
-  steer.limit(this.maxforce)//Limit the magnitude of this vector to the value used for the max parameter
+  if (generation < height/w) {
+    generate();
   }
 }
-return steer;
+function generate() {
+
+  let nextgen = Array(cells.length);
+
+  for (let i = 1; i < cells.length-1; i++) {
+    let left   = cells[i-1];   // Left neighbor state
+    let me     = cells[i];     // Current state
+    let right  = cells[i+1];   // Right neighbor state
+    nextgen[i] = rules(left, me, right); // Compute next generation state based on ruleset
+  }
+
+  cells = nextgen;
+  generation++;
 }
-Boid.prototype.align = function(boids){}
-Boid.prototype.cohesion = function(boids){
-  //TODO
+function rules(a,b,c){
+  if(a ==1 && b == 1 && c == 1)return ruleset[0];
+  if(a ==1 && b == 1 && c == 0)return ruleset[1];
+  if(a ==1 && b == 0 && c == 1)return ruleset[2];
+  if(a ==1 && b == 0 && c == 0)return ruleset[3];
+  if(a ==0 && b == 1 && c == 1)return ruleset[4];
+  if(a ==0 && b == 1 && c == 0)return ruleset[5];
+  if(a ==0 && b == 0 && c == 1)return ruleset[6];
+  if(a ==0 && b == 0 && c == 0)return ruleset[7];
+return 0
 }
+
  </script>
   </body>
 </html>
