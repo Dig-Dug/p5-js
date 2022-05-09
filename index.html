@@ -9,65 +9,82 @@
         <p>lol</p>
     </main>
     <script>
-let NUMSINES = 20; // how many of these things can we do at once?
-let sines = new Array(NUMSINES); // an array to hold all the current angles
-let rad; // an initial radius value for the central sine
-let i; // a counter variable
+let x,y;
+let currentangle = 0;
+let step =20; let angle =90;
+let thestring = 'A';
+let numloops = 9;
+let therules = [];
+therules[0] = ['A', '-BF+AFA+FB-']; // first rule
+therules[1] = ['B', '+AF-BFB-FAA+']; // second rule
 
-// play with these to get a sense of what's going on:
-let fund = 0.045; // the speed of the central sine
-let ratio = 2; // what multiplier for speed is each additional sine?
-let alpha = 20; // how opaque is the tracing system
+let whereinstring = 0;
 
-let trace = false; // are we tracing?
 
 function setup() {
   createCanvas(710, 400);
+background(255); // clear the screen
+stroke(0,0,0,255);
 
-  rad = height / 4; // compute radius for central circle
-  background(204); // clear the screen
-
-  for (let i = 0; i<sines.length; i++) {
-    sines[i] = PI; // start EVERYBODY facing NORTH
-  }
+x = 0; y = height-1;
+for(let i=0; i < numloops; i++){
+  thestring = lindenmayer(thestring);
+}
+ 
 }
 
 function draw() {
-  if (!trace) {
-    background(204); // clear screen if showing geometry
-    //stroke(4, 255); // black pen
-    noFill(); // don't fill
-  }
-  push(); // start a transformation matrix
-  translate(width / 2, height / 2); // move to middle of screen
-
-  for (let i = 0; i < sines.length; i++) {
-    let erad = 0; // radius for small "point" within circle... this is the 'pen' when tracing
-    // setup for tracing
-    if (trace) {
-     stroke(0, 0, 255 * (float(i) / sines.length), alpha); // blue
-      fill(0, 0, 255, alpha / 2); // also, um, blue
-      erad = 5.0 * (1.0 - float(i) / sines.length); // pen width will be related to which sine
+  drawIt(thestring[whereinstring]);
+  whereinstring++;
+  if(whereinstring > thestring.length - 1) whereinstring = 0;
+}
+function lindenmayer(s){
+let outputstring = '';
+for(let i = 0; i < s.length; i++){
+  let ismatch = 0;
+  for(let j = 0; j < therules.length; j++){
+    if(s[i] == therules[j][0]){
+      outputstring += therules[j][1];
+      ismatch = 1; break;
     }
-    let radius = rad / (i+1);
-    rotate(sines[i]);
-    if(!trace) ellipse(0,0,radius *27, radius * 2); push();
-    translate(0,radius);
-    if(!trace) ellipse(0,0,5,5)
-    ellipse(40,50,5,5) 
-    
-    if(trace) ellipse(0,0,erad,erad); pop(); translate(0,radius);
-   sines[i] = sines[i];
-   sines[i] = (sines[i] +( fund + (fund * i / 3 * ratio)) )% TWO_PI;
-}pop()
+} if(ismatch == 0) outputstring += s[i];
+}return outputstring;
+
+}
+function drawIt(k){
+  if(k == 'F'){
+    let x1 = x + step*cos(radians(currentangle));
+    let y1 = y + step*sin(radians(currentangle));
+    line(x, y, x1, y1); // connect the old and the new
+
+    // update the turtle's position:
+    x = x1;
+    y = y1;
+  }else if( k == '+'){
+    currentangle += angle;
+}else if( k == '-'){
+  currentangle -= angle;
 }
 
-function keyReleased(){
-  if(key == ' '){
-    trace = !trace;
-    background(255);
-  }
+  //let r = random(128,255);
+  //let g = random(0,192);
+  //let b = color('magenta');
+  let j = color('yellow');
+  //let a = random(50,55);
+
+  let radius = 0;
+  radius += random(0, 15);
+  radius += random(0, 15);
+  radius += random(0, 15);
+ // radius = radius / 3;
+
+  fill(j,12,12);
+  ellipse(x,y,radius,radius)
+
+
 }
+
+
  </script>
   </body>
 </html>
