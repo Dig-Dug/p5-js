@@ -1,6 +1,6 @@
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.js"></script>
    <!--  <script src="sketch.js"></script> -->
     <link rel="icon" type="image/x-icon" href="ssd.jpg">
   </head>
@@ -9,81 +9,106 @@
         <p>lol</p>
     </main>
     <script>
-let x,y;
-let currentangle = 0;
-let step =20; let angle =90;
-let thestring = 'A';
-let numloops = 9;
-let therules = [];
-therules[0] = ['A', '-BF+AFA+FB-']; // first rule
-therules[1] = ['B', '+AF-BFB-FAA+']; // second rule
-
-let whereinstring = 0;
-
-
-function setup() {
-  createCanvas(710, 400);
-background(255); // clear the screen
-stroke(0,0,0,255);
-
-x = 0; y = height-1;
-for(let i=0; i < numloops; i++){
-  thestring = lindenmayer(thestring);
-}
- 
-}
-
-function draw() {
-  drawIt(thestring[whereinstring]);
-  whereinstring++;
-  if(whereinstring > thestring.length - 1) whereinstring = 0;
-}
-function lindenmayer(s){
-let outputstring = '';
-for(let i = 0; i < s.length; i++){
-  let ismatch = 0;
-  for(let j = 0; j < therules.length; j++){
-    if(s[i] == therules[j][0]){
-      outputstring += therules[j][1];
-      ismatch = 1; break;
+ let num = 2; let salt = [];
+ function setup(){
+createCanvas(700,400);
+noStroke();
+salt[0] = new Salt(240, 260, 40, 0.98, 8.0, 0.1, salt, 0);
+salt[1] = new Salt(320, 210, 120, 0.95, 9.0, 0.1, salt, 1);
+salt[2] = new Salt(180, 170, 200, 0.90, 9.9, 0.1, salt, 2);
+ }
+ function draw(){
+   for(let i = 0; i < num; i++){
+    salt[i].udpate();
+   salt[i].display();
+   }
+ }
+ function press(){
+   for(let i = 0; i < num; i++ ){
+     salt[i].pressed();
+   }
+ }
+ function relea(){
+   for(let i = 0; i < num; i++){
+     salt[i].released();
     }
-} if(ismatch == 0) outputstring += s[i];
-}return outputstring;
 
+ }
+ function Salt(a,b,c,d,e,f,g,h){
+   this._a = a;
+   this._b = b;
+  this.size = 20;
+  this.size = c;
+   this.over = false;
+   this.move = false;
+   this.mass = d;
+   this.k = 0.2;
+   this.k = e; this.damping = f;
+   this.restPx = a;
+   this.restPy = b;
+   this.velocityX = 0.0
+   this.velocityy = 0.0
+   this.accel = 0
+   this.force = 0
+   this.other = g
+   this.friends = h;
+
+   this.udpate = function(){
+    if(this.move){
+     this.restPx = mouseX;
+     this.restPy = mouseY;
+   }
+   this.force = this.k * (this.a - this.restPx);
+   this.accel = this.force/ this.mass;
+   this.velocityy = this.damping * (this.velocityy + this.accel);
+   this.b = this.b + this.velocityy;
+
+  this.force = -this.k;
+  this.accel = this.force / this.mass;
+  this.velocityX = this.damping;
+  this.b = this.b + this.velocityX
+
+if((this.overEvent()|| this.move) && !(this.otherOver())){
+  this.over = true
+}else{this.over = false}
+   }
+   this.overEvent = function(){
+     let disX = this.a - mouseX;
+     let disY = this.b - mouseY;
+     let dis = createVector(disX, disY);
+     if(dis.mag() < this.size/2){
+       return true;
+     }else{return false;}
+   }
+   this.otherOver = function(){
+     for(let i = 0; i < num ; i++){
+       if(i != this.g){ if( this.friends[i].over == true){
+         return true;
+       }}
+     }return false
+   }
+   this.display = function(){
+    if(this.over){
+      fill(233)
+    }else{
+      fill(153)
+    } 
+ellipse(this._a, this._b, this.size,this.size)
+   }
+
+this.pressed = function(){
+  if(this.over){
+   
+    this.move = true
+  }else{
+    this.move = false;
+  }
 }
-function drawIt(k){
-  if(k == 'F'){
-    let x1 = x + step*cos(radians(currentangle));
-    let y1 = y + step*sin(radians(currentangle));
-    line(x, y, x1, y1); // connect the old and the new
-
-    // update the turtle's position:
-    x = x1;
-    y = y1;
-  }else if( k == '+'){
-    currentangle += angle;
-}else if( k == '-'){
-  currentangle -= angle;
-}
-
-  //let r = random(128,255);
-  //let g = random(0,192);
-  //let b = color('magenta');
-  let j = color('yellow');
-  //let a = random(50,55);
-
-  let radius = 0;
-  radius += random(0, 15);
-  radius += random(0, 15);
-  radius += random(0, 15);
- // radius = radius / 3;
-
-  fill(j,12,12);
-  ellipse(x,y,radius,radius)
-
-
-}
-
+this.released = function(){}
+this.move = false; 
+this.restPx = this._b;
+this.restPy = this._a;
+ }
 
  </script>
   </body>
